@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./todo.css" />
+    <title>Online Education Monitor</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Education Monitor</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarText"
+        aria-controls="navbarText"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="./todo.html"
+              >Todo<span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./grades.html">Grades</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./classes.html">Classes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./account.html">Account</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Class</th>
+              <th scope="col">Assingment Name</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>History</td>
+              <td>Assignment1</td>
+              <td>Sept 8,2021</td>
+              <td>
+                <div>Done</div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>History</td>
+              <td>Assignment2</td>
+              <td>Sept 12,2021</td>
+              <td>
+                <div>Done</div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>History</td>
+              <td>Assignment3</td>
+              <td>Sept 17,2021</td>
+              <td>
+                <div>-</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseAddTask"
+        aria-expanded="false"
+        aria-controls="collapseAddTask"
+      >
+        Add task
+      </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseRemoveTask"
+        aria-expanded="false"
+        aria-controls="collapseRemoveTask"
+      >
+        Remove task
+      </button>
+
+      <div
+        class="my-3 p-3 bg-body rounded shadow-sm collapse"
+        id="collapseAddTask"
+      >
+        <form>
+          <div class="form-group">
+            <select class="form-control add-task-field">
+              <option selected disabled>Choose class</option>
+              <option value="History">History</option>
+              <option value="English">English</option>
+              <option value="French">French</option>
+            </select>
+            <div class="add-task">
+              <input class="form-control" type="text" placeholder="Task Name" />
+            </div>
+            <div class="add-task">
+              <label class="date-label">Due Date: </label>
+              <input class="form-control" type="date" />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+
+      <div
+        class="my-3 p-3 bg-body rounded shadow-sm collapse"
+        id="collapseRemoveTask"
+      >
+        <form>
+          <div class="form-group">
+            <select class="form-control">
+              <option selected disabled>Choose Task</option>
+              <option value="Assignment1">Assignment1</option>
+              <option value="Assignment2">Assignment2</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </main>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
