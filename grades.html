@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Online Education Monitor</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Education Monitor</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarText"
+        aria-controls="navbarText"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="./todo.html">Todo</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="./grades.html"
+              >Grades<span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./classes.html">Classes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./account.html">Account</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <div class="dropdown">
+          <button
+            class="btn btn-primary dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+          >
+            Choose class <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#">Class 1</a></li>
+            <li><a href="#">Class 2</a></li>
+            <li><a href="#">Class 3</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h1>Class Name</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Status</th>
+              <th scope="col">Score</th>
+              <th scope="col">Out of</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Assignment1</td>
+              <td>Marked</td>
+              <td>11</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Assignment2</td>
+              <td>Marked</td>
+              <td>11</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Assignment3</td>
+              <td>Marked</td>
+              <td>11</td>
+              <td>15</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <div class="text-center">
+          <div>
+            <strong class="text-gray-dark">Current Grade: </strong> A- (81%)
+          </div>
+        </div>
+      </div>
+    </main>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
