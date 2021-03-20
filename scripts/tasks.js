@@ -1,3 +1,9 @@
+function createHeaders() {
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  return headers;
+}
+
 function getFormData(formID) {
   const form = document.getElementById(formID);
   return Object.values(form).reduce((obj, field) => {
@@ -8,6 +14,31 @@ function getFormData(formID) {
   }, {});
 }
 
+function deleteTask(event) {
+  event.preventDefault(); // debugging -  prevent the page from refreshing
+  const formData = getFormData("delete-task-form");
+
+  const headers = createHeaders();
+
+  const data = JSON.stringify({
+    taskId: "b3d8b122-67ab-4e29-8f81-6ad4059974d9", // formData.task - for now the value is hardcoded for
+  });
+
+  const requestOptions = {
+    method: "DELETE",
+    headers: headers,
+    body: data,
+    redirect: "follow",
+  };
+
+  fetch("https://xckwrl3df7.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
+    .then((response) => response.text())
+    .then((result) => {
+      console.log(result.body);
+    })
+    .catch((error) => console.log("error", error.message));
+}
+
 function addTask(event) {
   event.preventDefault(); //debugging - prevent the page from refreshing
 
@@ -15,12 +46,10 @@ function addTask(event) {
   const formData = getFormData("add-task-form");
 
   // instantiate a headers object
-  const headers = new Headers();
-  // add content type header to object
-  headers.append("Content-Type", "application/json");
+  const headers = createHeaders();
 
   const data = JSON.stringify({
-    classroom: 3, // hardcoded int
+    classroom: 2, // hardcoded int
     title: formData.title,
     deadline: formData.deadline,
     student: 2, // hardcoded int
@@ -42,5 +71,5 @@ function addTask(event) {
     .then((result) => {
       console.log(result.body);
     })
-    .catch((error) => console.log("error", error));
+    .catch((error) => console.log("error", error.message));
 }

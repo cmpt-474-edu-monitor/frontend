@@ -132,9 +132,9 @@
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveTask">
-        <form>
+        <form method="delete" onsubmit="deleteTask(event);" id="delete-task-form">
           <div class="form-group">
-            <select class="form-control">
+            <select class="form-control" name="task">
               <option selected disabled>Choose Task</option>
               <option value="Assignment1">Assignment1</option>
               <option value="Assignment2">Assignment2</option>
