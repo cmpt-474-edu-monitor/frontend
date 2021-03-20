@@ -1,3 +1,8 @@
+// to load the tasks when the page first loads
+// $(document).ready(function () {
+//   listTasks();
+// });
+
 function createHeaders() {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
@@ -33,9 +38,27 @@ function deleteTask(event) {
 
   fetch("https://xckwrl3df7.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
     .then((response) => response.text())
-    .then((result) => {
-      console.log(result.body);
+    .then((data) => {
+      console.log(data.body);
     })
+    .catch((error) => console.log("error", error.message));
+}
+
+function listTasks() {
+  const headers = createHeaders();
+
+  const requestOptions = {
+    method: "GET",
+    headers: headers,
+  };
+
+  // student id is hard coded for now
+  // NOTE: can also filter by classroom /studentId/classroomId
+  fetch("https://xckwrl3df7.execute-api.us-east-1.amazonaws.com/dev/2", requestOptions)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => console.log(JSON.parse(data.body)))
     .catch((error) => console.log("error", error.message));
 }
 
@@ -67,9 +90,11 @@ function addTask(event) {
 
   // make API call and use promises to get response
   fetch("https://xckwrl3df7.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
-    .then((response) => response.text())
-    .then((result) => {
-      console.log(result.body);
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log(JSON.parse(data.body));
     })
     .catch((error) => console.log("error", error.message));
 }
