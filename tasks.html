@@ -50,45 +50,16 @@
 
     <main class="container">
       <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <table class="table">
+        <table class="table" id="tasks-table">
           <thead>
             <tr>
-              <th scope="col">#</th>
               <th scope="col">Class</th>
               <th scope="col">Assingment Name</th>
               <th scope="col">Due Date</th>
               <th scope="col">Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>History</td>
-              <td>Assignment1</td>
-              <td>Sept 8,2021</td>
-              <td>
-                <div>Done</div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>History</td>
-              <td>Assignment2</td>
-              <td>Sept 12,2021</td>
-              <td>
-                <div>Done</div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>History</td>
-              <td>Assignment3</td>
-              <td>Sept 17,2021</td>
-              <td>
-                <div>-</div>
-              </td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
       <button
@@ -108,10 +79,10 @@
         data-target="#collapseRemoveTask"
         aria-expanded="false"
         aria-controls="collapseRemoveTask"
+        onclick="populateDropdown()"
       >
         Remove task
       </button>
-      <button onclick="listTasks()">List Tasks</button>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddTask">
         <form method="post" onsubmit="addTask(event)" id="add-task-form">
@@ -137,10 +108,8 @@
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveTask">
         <form method="delete" onsubmit="deleteTask(event)" id="delete-task-form">
           <div class="form-group">
-            <select class="form-control" name="task">
+            <select class="form-control" name="task" id="delete-task-select">
               <option selected disabled>Choose Task</option>
-              <option value="Assignment1">Assignment1</option>
-              <option value="Assignment2">Assignment2</option>
             </select>
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
