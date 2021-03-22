@@ -83,6 +83,17 @@
       >
         Remove task
       </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseEditTask"
+        aria-expanded="false"
+        aria-controls="collapseEditTask"
+        onclick="populateDropdown()"
+      >
+        Edit Task
+      </button>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddTask">
         <form method="post" onsubmit="addTask(event)" id="add-task-form">
@@ -111,6 +122,51 @@
             <select class="form-control" name="task" id="delete-task-select">
               <option selected disabled>Choose Task</option>
             </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseEditTask">
+        <form method="post" onsubmit="editTask(event)" id="edit-task-form">
+          <div class="form-group">
+            <select
+              class="form-control"
+              name="taskId"
+              id="edit-task-select"
+              onchange="updateEditForm(this)"
+            >
+              <option selected disabled>Choose Task</option>
+            </select>
+            <select
+              class="form-control add-task-field add-task"
+              name="class"
+              id="edit-task-classroom"
+            >
+              <option selected disabled>Choose class</option>
+              <option value="History">History</option>
+              <option value="English">English</option>
+              <option value="French">French</option>
+            </select>
+            <div class="add-task">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Task Name"
+                name="title"
+                id="edit-task-title"
+              />
+            </div>
+            <div class="add-task">
+              <label class="date-label">Due Date: </label>
+              <input class="form-control" type="date" name="deadline" id="edit-task-deadline" />
+            </div>
+            <div>
+              <input type="checkbox" name="done" id="edit-task-done" value="false" />
+              <label for="done">Done?</label>
+            </div>
+            <input type="hidden" name="student" id="edit-task-student" />
+            <input type="hidden" name="addedBy" id="edit-task-addedBy" />
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
