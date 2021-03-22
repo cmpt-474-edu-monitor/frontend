@@ -12,17 +12,19 @@
     />
     <link href="login.css" rel="stylesheet" />
     <title>Online Education Monitor</title>
+    <script src="./node_modules/edu-monitor-sdk/lib/client.js"></script>
+    <script src="./scripts/login.js"></script>
   </head>
   <body class="text-center">
     <form class="form-sigin" action="./tasks.html">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
       <input id="userName" type="email" class="form-control" placeholder="Email address" />
       <input id="userPassword" type="password" class="form-control" placeholder="Password" />
-      <a href="./tasks.html">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </a>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="signin()">Sign in</button>
       <div class="alert alert-info" role="alert">
-        Login currently not functional. Simply click sign-in
+        User service (eg. creation, logging in) is not fully implemented for iteration 1.
+        <br />
+        Right now you can login with arbitrary email and password.
       </div>
     </form>
   </body>
