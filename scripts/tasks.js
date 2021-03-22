@@ -92,7 +92,6 @@ function addToTable(items) {
 }
 
 function populateDropdown() {
-  console.log(GLOBAL_TASKS);
   $('#delete-task-select').empty();
   GLOBAL_TASKS.forEach((task) => {
     $('#delete-task-select').append(
