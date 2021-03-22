@@ -10,7 +10,10 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./todo.css" />
+    <link rel="stylesheet" href="./tasks.css" />
+    <script src="./node_modules/edu-monitor-sdk/lib/client.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="./scripts/tasks.js"></script>
     <title>Online Education Monitor</title>
   </head>
   <body>
@@ -30,9 +33,7 @@
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="./todo.html"
-              >Todo<span class="sr-only">(current)</span></a
-            >
+            <a class="nav-link" href="./tasks.html">Tasks<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="./grades.html">Grades</a>
@@ -49,45 +50,16 @@
 
     <main class="container">
       <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <table class="table">
+        <table class="table" id="tasks-table">
           <thead>
             <tr>
-              <th scope="col">#</th>
               <th scope="col">Class</th>
-              <th scope="col">Assingment Name</th>
+              <th scope="col">Assignment Name</th>
               <th scope="col">Due Date</th>
               <th scope="col">Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>History</td>
-              <td>Assignment1</td>
-              <td>Sept 8,2021</td>
-              <td>
-                <div>Done</div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>History</td>
-              <td>Assignment2</td>
-              <td>Sept 12,2021</td>
-              <td>
-                <div>Done</div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>History</td>
-              <td>Assignment3</td>
-              <td>Sept 17,2021</td>
-              <td>
-                <div>-</div>
-              </td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
       <button
@@ -107,45 +79,94 @@
         data-target="#collapseRemoveTask"
         aria-expanded="false"
         aria-controls="collapseRemoveTask"
+        onclick="populateDropdown()"
       >
         Remove task
       </button>
-
-      <div
-        class="my-3 p-3 bg-body rounded shadow-sm collapse"
-        id="collapseAddTask"
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseEditTask"
+        aria-expanded="false"
+        aria-controls="collapseEditTask"
+        onclick="populateDropdown()"
       >
-        <form>
+        Edit Task
+      </button>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddTask">
+        <form method="post" onsubmit="addTask(event)" id="add-task-form">
           <div class="form-group">
-            <select class="form-control add-task-field">
+            <select class="form-control add-task-field" name="class">
               <option selected disabled>Choose class</option>
               <option value="History">History</option>
               <option value="English">English</option>
               <option value="French">French</option>
             </select>
             <div class="add-task">
-              <input class="form-control" type="text" placeholder="Task Name" />
+              <input class="form-control" type="text" placeholder="Task Name" name="title" />
             </div>
             <div class="add-task">
               <label class="date-label">Due Date: </label>
-              <input class="form-control" type="date" />
+              <input class="form-control" type="date" name="deadline" />
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
       </div>
 
-      <div
-        class="my-3 p-3 bg-body rounded shadow-sm collapse"
-        id="collapseRemoveTask"
-      >
-        <form>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveTask">
+        <form method="delete" onsubmit="deleteTask(event)" id="delete-task-form">
           <div class="form-group">
-            <select class="form-control">
+            <select class="form-control" name="task" id="delete-task-select">
               <option selected disabled>Choose Task</option>
-              <option value="Assignment1">Assignment1</option>
-              <option value="Assignment2">Assignment2</option>
             </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseEditTask">
+        <form method="post" onsubmit="editTask(event)" id="edit-task-form">
+          <div class="form-group">
+            <select
+              class="form-control"
+              name="taskId"
+              id="edit-task-select"
+              onchange="updateEditForm(this)"
+            >
+              <option selected disabled>Choose Task</option>
+            </select>
+            <select
+              class="form-control add-task-field add-task"
+              name="class"
+              id="edit-task-classroom"
+            >
+              <option selected disabled>Choose class</option>
+              <option value="History">History</option>
+              <option value="English">English</option>
+              <option value="French">French</option>
+            </select>
+            <div class="add-task">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Task Name"
+                name="title"
+                id="edit-task-title"
+              />
+            </div>
+            <div class="add-task">
+              <label class="date-label">Due Date: </label>
+              <input class="form-control" type="date" name="deadline" id="edit-task-deadline" />
+            </div>
+            <div>
+              <input type="checkbox" name="done" id="edit-task-done" value="false" />
+              <label for="done">Done?</label>
+            </div>
+            <input type="hidden" name="student" id="edit-task-student" />
+            <input type="hidden" name="addedBy" id="edit-task-addedBy" />
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
