@@ -17,8 +17,8 @@ async function addTask(event) {
   event.preventDefault(); // prevents the page from refreshing
 
   const formData = getFormData('add-task-form');
-
   const classroom = Object.keys(CLASSROOMS).find((key) => CLASSROOMS[key] === formData.class);
+  const user = JSON.parse(sessionStorage.getItem('user'));
 
   try {
     // classroom, student, addedBy is hard coded for now
@@ -27,9 +27,9 @@ async function addTask(event) {
       classroom,
       formData.title,
       formData.deadline,
-      3,
+      user.id,
       false,
-      1
+      user.id
     );
     task = JSON.parse(task);
     GLOBAL_TASKS.push(task);
@@ -56,8 +56,9 @@ async function deleteTask(event) {
 
 async function listTasks() {
   try {
+    const user = JSON.parse(sessionStorage.getItem('user'));
     // can query for tasks by studentId and classroomId (optional)
-    let tasks = await client.Tasks.listTasks(3);
+    let tasks = await client.Tasks.listTasks(user.id);
     tasks = JSON.parse(tasks);
     GLOBAL_TASKS = tasks;
     addToTable(tasks);
@@ -75,9 +76,9 @@ async function editTask(event) {
     classroom: Object.keys(CLASSROOMS).find((key) => CLASSROOMS[key] === formData.class),
     title: formData.title,
     deadline: formData.deadline,
-    student: parseInt(formData.student),
+    student: formData.student,
     done: formData.done,
-    addedBy: parseInt(formData.addedBy),
+    addedBy: formData.addedBy,
   };
 
   try {
@@ -106,7 +107,11 @@ async function editTask(event) {
 
 // to load the tasks when the page first loads
 $(document).ready(function () {
-  listTasks();
+  if (sessionStorage.getItem('user') === null) {
+    window.location = './index.html'
+  } else {
+    listTasks();
+  }
 });
 
 function getFormData(formID) {
