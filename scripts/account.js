@@ -1,18 +1,16 @@
 const client = Client.create('https://5ga1qnpnq0.execute-api.us-east-1.amazonaws.com/jsonrpc');
 
+window.onload = function () {
+  if (sessionStorage.getItem('user') === null) {
+    window.location = './tasks.html'
+  } else {
+    loadUser();
+  }
+}
 
-
-;(async () => {
-    // const profile = await client.Users.show()
-    await new Promise((resolve, reject) => setTimeout(resolve, 500 + (Math.random() * 500)))
-
-    const profile = {
-        name: 'Dummy Student',
-        email: 'foo@bar.com',
-        role: 'Student'
-    }
-
-    nameDisp.innerText = profile.name
-    emailDisp.innerText = profile.email
-    roleDisp.innerText = profile.role
-})().catch(err => alert('Cannot fetch classrooms: ' + err.message))
+function loadUser() {
+  const user = JSON.parse(sessionStorage.getItem('user'));
+  $('#nameDisp').html(`${user.firstName} ${user.lastName}`);
+  $('#emailDisp').html(user.email);
+  $('#roleDisp').html(user.role);
+}

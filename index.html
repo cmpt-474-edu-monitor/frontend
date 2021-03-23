@@ -13,19 +13,70 @@
     <link href="login.css" rel="stylesheet" />
     <title>Online Education Monitor</title>
     <script src="./node_modules/edu-monitor-sdk/lib/client.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="./scripts/login.js"></script>
   </head>
-  <body class="text-center">
-    <form class="form-sigin" action="./tasks.html">
-      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-      <input id="userName" type="email" class="form-control" placeholder="Email address" />
-      <input id="userPassword" type="password" class="form-control" placeholder="Password" />
-      <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="signin()">Sign in</button>
-      <div class="alert alert-info" role="alert">
-        User service (eg. creation, logging in) is not fully implemented for iteration 1.
-        <br />
-        Right now you can login with arbitrary email and password.
+  <body>
+    <div>
+      <div id="container-signup">
+        <form id="FormSignUp" class="form-signin">
+          <h1 class="h3 mb-3 font-weight-normal">Please Sign Up</h1>
+          <input
+            id="signup-firstName"
+            name="firstName"
+            type="text"
+            class="form-control"
+            placeholder="First Name"
+          />
+          <input
+            id="signup-lastName"
+            name="lastName"
+            type="text"
+            class="form-control"
+            placeholder="Last Name"
+          />
+          <select class="form-control" name="role">
+            <option value="student">Student</option>
+            <option value="guardian">Guardian</option>
+            <option value="teacher">Teacher</option>
+          </select>
+          <input
+            id="signup-email"
+            name="email"
+            type="email"
+            class="form-control"
+            placeholder="Email address"
+          />
+          <input
+            id="signup-password"
+            name="password"
+            type="password"
+            class="form-control"
+            placeholder="Password"
+          />
+          <button
+            class="btn btn-lg btn-primary btn-block form-button"
+            type="submit"
+            onclick="signup(event)"
+          >
+            Sign Up
+          </button>
+        </form>
       </div>
-    </form>
+      <div id="container-signin">
+        <form id="FormSignIn" class="form-signin">
+          <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
+          <input name="email" id="signin-email" type="email" class="form-control" placeholder="Email address" />
+          <input name="password" id="signin-password" type="password" class="form-control" placeholder="Password" />
+          <button
+            class="btn btn-lg btn-primary btn-block form-button"
+            type="submit"
+            onclick="signin(event)"
+          >
+            Sign in
+          </button>
+        </form>
+      </div>
+    </div>
   </body>
 </html>
