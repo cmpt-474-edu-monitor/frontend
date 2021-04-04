@@ -11,6 +11,11 @@
       crossorigin="anonymous"
     />
     <title>Online Education Monitor</title>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
     <script src="./node_modules/edu-monitor-sdk/lib/client.js"></script>
     <script type="text/javascript" src="./scripts/classes.js"></script>
     <script type="text/javascript" src="./scripts/utils.js"></script>
@@ -55,32 +60,107 @@
     </nav>
 
     <main class="container">
+      <div class="my-3 p-3 bg-body rounded shadow-sm invisible">
+        <select class="form-control" name="dependent" id="dependent-select">
+          <option selected disabled>Choose Dependent</option>
+        </select>
+      </div>
       <div class="my-3 p-3 bg-body rounded shadow-sm">
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">#</th>
               <th scope="col">Class Name</th>
               <th scope="col">Instructor</th>
               <th scope="col"># Students</th>
             </tr>
           </thead>
-          <tbody id="classDropDown">
-            <tr>
-              <th scope="row"></th>
-              <td></td>
-              <td>Loading...</td>
-              <td></td>
-            </tr>
-          </tbody>
+          <tbody id="classroom-table"></tbody>
         </table>
       </div>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseCreateClassroom"
+        aria-expanded="false"
+        aria-controls="collapseCreateClassroom"
+        id="create-classroom-button"
+      >
+        Create Classroom
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseEnrollStudent"
+        aria-expanded="false"
+        aria-controls="collapseEnrollStudent"
+        id="enroll-student-button"
+        onclick="getClassrooms(event)"
+      >
+        Enroll Student
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseWithdrawStudent"
+        aria-expanded="false"
+        aria-controls="collapseWithdrawStudent"
+        id="withdraw-student-button"
+        onclick="getClassrooms(event)"
+      >
+        Withdraw Student
+      </button>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseCreateClassroom">
+        <form method="post" onsubmit="createClassroom(event)" id="CreateClassroomForm">
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Classroom Title"
+              name="classroomTitle"
+              id="classroom-title-input"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseEnrollStudent">
+        <form method="post" onsubmit="enrollStudent(event)" id="EnrollStudentForm">
+          <div class="form-group">
+            <select class="form-control" name="classroom" id="enroll-student-select">
+              <option selected disabled>Choose classroom</option>
+            </select>
+            <input
+              class="form-control invisible"
+              type="email"
+              placeholder="Student Email"
+              name="studentEmail"
+              id="enroll-student-email-input"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseWithdrawStudent">
+        <form method="post" onsubmit="withdrawStudent(event)" id="WithdrawStudentForm">
+          <div class="form-group">
+            <select class="form-control" name="classroom" id="withdraw-student-select">
+              <option selected disabled>Choose classroom</option>
+            </select>
+            <input
+              class="form-control invisible"
+              type="email"
+              placeholder="Student Email"
+              name="studentEmail"
+              id="withdraw-student-email-input"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
     </main>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"

@@ -6,8 +6,8 @@ async function login(event) {
   const formData = new FormData(document.forms.FormSignIn)
 
   try {
-    const account = await client.Users.login(formData.get('email'), formData.get('password'))
-    window.location = './account.html'
+    await client.Users.login(formData.get('email'), formData.get('password'))
+    window.location = './tasks.html'
   } catch (err) {
     alert('Cannot login: ' + err.message)
   }
@@ -25,8 +25,8 @@ async function signup(event) {
   const password = formData.get('password')
 
   try {
-    const account = await client.Users.signup(user, password)
-    window.location = './accounts.html'
+    await client.Users.signup(user, password)
+    window.location = './tasks.html'
   } catch (err) {
     alert('Cannot login:  ' + err.message)
   }
