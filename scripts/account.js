@@ -1,33 +1,30 @@
 const client = Client.create('https://5ga1qnpnq0.execute-api.us-east-1.amazonaws.com/jsonrpc')
+const user = JSON.parse(window.sessionStorage.getItem('user'))
 
 window.onload = function () {
-  loadUser()
-}
+  updateAccountInformation()
 
-async function loadUser() {
-  try {
-    const user = await client.Users.me()
-    updateAccountInformation(user)
-  } catch (err) {
-    alert('Cannot get account information : ' + err.message)
+  if (user.role == 'STUDENT') {
+    $('#add-guardian-button').removeClass('invisible')
+    $('#delete-guardian-button').removeClass('invisible')
   }
 }
 
-// TODO: Not sure where this is going to be used
-async function listGuardians() {
-  try {
-    const list = await client.Users.listGuardians()
-    console.log(list)
-  } catch (err) {
-    alert('Cannot get list of guardians: ' + err.message)
-  }
-}
+// async function listGuardians() {
+//   try {
+//     const list = await client.Users.listGuardians()
+//   } catch (err) {
+//     alert('Cannot get list of guardians: ' + err.message)
+//   }
+// }
 
 async function updatePassword(event) {
   event.preventDefault()
   const formData = new FormData(document.forms.UpdatePasswordForm)
+  const newPassword = formData.get('newPassword')
+  const oldPassword = formData.get('oldPassword')
   try {
-    await client.Users.updatePassword(formData.get('newPassword'), formData.get('oldPassword'))
+    await client.Users.updatePassword(newPassword, oldPassword)
     alert('Successfully Updated Password!')
     $('#UpdatePasswordForm').trigger('reset')
   } catch (err) {
@@ -79,13 +76,8 @@ async function removeGuardian(event) {
   }
 }
 
-function updateAccountInformation(user) {
+function updateAccountInformation() {
   $('#nameDisp').html(`${user.firstName} ${user.lastName}`)
   $('#emailDisp').html(user.email)
   $('#roleDisp').html(user.role)
-
-  if (user.role == 'STUDENT') {
-    $('#add-guardian-button').removeClass('invisible')
-    $('#delete-guardian-button').removeClass('invisible')
-  }
 }

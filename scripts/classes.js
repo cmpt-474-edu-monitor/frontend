@@ -1,37 +1,50 @@
 const client = Client.create('https://5ga1qnpnq0.execute-api.us-east-1.amazonaws.com/jsonrpc')
-
-let USER_FIRST_NAME = undefined
-let USER_LAST_NAME = undefined
-let USER_ROLE = undefined
-let CLASSROOMS = undefined
-
-window.onload = function () {
-  loadUser()
+const user = JSON.parse(window.sessionStorage.getItem('user'))
+const classroomDropdownIds = {
+  'enroll-student-button': 'enroll-student-select',
+  'withdraw-student-button': 'withdraw-student-select',
 }
 
-async function loadUser() {
+let CLASSROOMS
+
+window.onload = function () {
+  if (user.role == 'EDUCATOR') {
+    $('#create-classroom-button').removeClass('invisible')
+    $('#enroll-student-button').removeClass('invisible')
+    $('#withdraw-student-button').removeClass('invisible')
+    $('#enroll-student-email-input').removeClass('invisible')
+    $('#withdraw-student-email-input').removeClass('invisible')
+    listClassrooms()
+  }
+  if (user.role == 'STUDENT') {
+    $('#enroll-student-button').removeClass('invisible')
+    $('#withdraw-student-button').removeClass('invisible')
+    listClassrooms()
+  }
+  if (user.role == 'GUARDIAN') {
+    $('#dependent-select').removeClass('invisible')
+    populateDependentDropdown()
+  }
+}
+
+async function listClassrooms() {
   try {
-    const user = await client.Users.me()
-    if (user) {
-      USER_FIRST_NAME = user.firstName
-      USER_LAST_NAME = user.lastName
-      USER_ROLE = user.role
-      if (USER_ROLE == 'EDUCATOR') {
-        $('#create-classroom-button').removeClass('invisible')
-        $('#enroll-student-button').removeClass('invisible')
-        $('#withdraw-student-button').removeClass('invisible')
-        $('#enroll-student-email-input').removeClass('invisible')
-        $('#withdraw-student-email-input').removeClass('invisible')
-        listInstructingClassrooms()
-      }
-      if (USER_ROLE == 'STUDENT') {
-        $('#enroll-student-button').removeClass('invisible')
-        $('#withdraw-student-button').removeClass('invisible')
-        listEnrolledClassrooms()
-      }
+    if (user.role == 'EDUCATOR') {
+      CLASSROOMS = await client.Classrooms.listInstructingClassrooms()
     }
+
+    if (user.role == 'STUDENT') {
+      CLASSROOMS = await client.Classrooms.listEnrolledClassrooms()
+    }
+
+    if (user.role == 'GUARDIAN') {
+      const dependentId = $('#dependent-select').val()
+      CLASSROOMS = await client.Classrooms.listEnrolledClassrooms(dependentId)
+    }
+
+    findInstructors()
   } catch (err) {
-    alert('Cannot load user information: ' + err.message)
+    alert('Cannot get list of classrooms: ' + err.message)
   }
 }
 
@@ -49,26 +62,6 @@ async function createClassroom(event) {
     $('#CreateClassroomForm').trigger('reset')
   } catch (err) {
     alert('Cannot create classroom: ' + err.message)
-  }
-}
-
-async function listInstructingClassrooms() {
-  try {
-    const listClassrooms = await client.Classrooms.listInstructingClassrooms()
-    CLASSROOMS = listClassrooms
-    findInstructors()
-  } catch (err) {
-    alert('Cannot get list of instructing classrooms: ' + err.message)
-  }
-}
-
-async function listEnrolledClassrooms() {
-  try {
-    const listClassrooms = await client.Classrooms.listEnrolledClassrooms()
-    CLASSROOMS = listClassrooms
-    findInstructors()
-  } catch (err) {
-    alert('Cannot get list of enrolled classrooms: ' + err.message)
   }
 }
 
@@ -94,7 +87,7 @@ async function withdrawStudent(event) {
   const classroomId = formData.get('classroom')
   const studentEmail = formData.get('studentEmail')
   try {
-    const classroom = await client.Classrooms.withdraw(classroomId, studentEmail)
+    await client.Classrooms.withdraw(classroomId, studentEmail)
     CLASSROOMS = CLASSROOMS.filter((classroom) => classroom.id != classroomId)
     findInstructors()
     $('#WithdrawStudentForm').trigger('reset')
@@ -104,7 +97,7 @@ async function withdrawStudent(event) {
 }
 
 function findInstructors() {
-  if (USER_ROLE == 'STUDENT') {
+  if (user.role == 'STUDENT' || user.role == 'GUARDIAN') {
     // User.lookup() to get the first name and last name of the instructor for each classroom
     CLASSROOMS.forEach(async (classroom) => {
       try {
@@ -128,8 +121,8 @@ function addClassroomsToTable() {
     $('#classroom-table').append(`<tr>
       <td>${classroom.title}</td>
       <td>${
-        USER_ROLE == 'EDUCATOR'
-          ? USER_FIRST_NAME + ' ' + USER_LAST_NAME
+        user.role == 'EDUCATOR'
+          ? user.firstName + ' ' + user.lastName
           : classroom.instructorFirstName + ' ' + classroom.instructorLastName
       }</td>
       <td>${classroom.students.length}</td>
@@ -138,7 +131,7 @@ function addClassroomsToTable() {
 }
 
 async function getClassrooms(event) {
-  if (USER_ROLE == 'EDUCATOR') {
+  if (user.role == 'EDUCATOR' || event.target.id == 'withdraw-student-button') {
     populateClassDropdown(event)
   } else {
     try {
@@ -152,19 +145,16 @@ async function getClassrooms(event) {
 
 async function populateClassDropdown(event, classrooms) {
   let mapClassrooms
+  let selectId = classroomDropdownIds[event.target.id]
   if (classrooms) {
     mapClassrooms = classrooms
   } else {
     mapClassrooms = CLASSROOMS
   }
+  $(`#${selectId}`).empty()
+  $(`#${selectId}`).append(`<option selected disabled>Choose Classroom</option>`)
   mapClassrooms.map((classroom) => {
-    $(
-      `#${
-        event.target.id == 'enroll-student-button'
-          ? 'enroll-student-select'
-          : 'withdraw-student-select'
-      }`
-    ).append(
+    $(`#${selectId}`).append(
       $('<option>', {
         value: classroom.id,
         text: classroom.title,
@@ -173,9 +163,16 @@ async function populateClassDropdown(event, classrooms) {
   })
 }
 
-// async function populateDependents(dependents) {
-//   try {
-//   } catch (err) {
-//     alert('Cannot populate dropdown of dependents: ' + err.message)
-//   }
-// }
+async function populateDependentDropdown() {
+  DEPENDENTS = await client.Users.listDependents(user.id)
+  $('#dependent-select').empty()
+  $('#dependent-select').append('<option selected disabled>Choose Dependent</option>')
+  DEPENDENTS.map((dependent) => {
+    $('#dependent-select').append(
+      $('<option>', {
+        value: dependent,
+        text: dependent,
+      })
+    )
+  })
+}

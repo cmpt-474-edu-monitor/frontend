@@ -6,3 +6,7 @@
 .borderless th {
   border: none;
 }
+
+.form-control, .submit-button {
+  margin-top: 25px;
+}

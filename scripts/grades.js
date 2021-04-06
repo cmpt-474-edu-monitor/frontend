@@ -16,7 +16,6 @@ const studentDropdownIds = {
 
 let CLASSROOMS
 let GRADING_COMPONENTS
-let GRADES = []
 let STUDENTS
 let DEPENDENTS
 let SELECTED_DEPENDENT
@@ -209,19 +208,20 @@ async function removeGrade(event) {
   }
 }
 
-async function populateDependentDropdown() {
-  if (user.role == 'GUARDIAN') {
-    DEPENDENTS = await client.Users.listDependents(user.id) 
-    DEPENDENTS.map((dependent) => {
-      $('#dependent-select').append(
-        $('<option>', {
-          value: dependent,
-          text: dependent
-        })
-      )
-    })
-  }
+
+function addToGradesTable() {
+  $('#grades-table').empty()
+  GRADING_COMPONENTS.map((component) => {
+    $('#grades-table').append(`<tr>
+      <td>${component.title}</td>
+      <td>${component.total.toString()}</td>
+      <td>${component.weight.toString()}</td>` + (user.role == 'EDUCATOR' ? component.grade.length ? JSON.stringify(component.grade) : '[]' + '</tr>' : `<td>${component.grade.score}</td> <td>${component.grade.comments}</td>` + '</tr>')
+    )
+  })
 }
+
+
+// POPULATE DROPDOWN FUNCTIONS
 
 async function populateClassdropdown() {
   try {
@@ -238,6 +238,8 @@ async function populateClassdropdown() {
     }
 
     if (CLASSROOMS) {
+      $('#classroom-select').empty()
+      $('#classroom-select').append('<option selected disabled>Choose Classroom</option>')
       CLASSROOMS.map((classroom) => {
         $('#classroom-select').append(
           $('<option>', {
@@ -252,21 +254,26 @@ async function populateClassdropdown() {
   }
 }
 
-function addToGradesTable() {
-  $('#grades-table').empty()
-  GRADING_COMPONENTS.map((component) => {
-    $('#grades-table').append(`<tr>
-      <td>${component.title}</td>
-      <td>${component.total.toString()}</td>
-      <td>${component.weight.toString()}</td>` + (user.role == 'EDUCATOR' ? component.grade.length ? JSON.stringify(component.grade) : '[]' + '</tr>' : `<td>${component.grade.score}</td> <td>${component.grade.comments}</td>` + '</tr>')
-    )
-  })
+async function populateDependentDropdown() {
+  if (user.role == 'GUARDIAN') {
+    DEPENDENTS = await client.Users.listDependents(user.id) 
+    $('#dependent-select').empty()
+    $('#dependent-select').append('<option selected disabled>Choose Dependent</option>')
+    DEPENDENTS.map((dependent) => {
+      $('#dependent-select').append(
+        $('<option>', {
+          value: dependent,
+          text: dependent
+        })
+      )
+    })
+  }
 }
 
 function populateComponentDropdown(event) {
   const selectId = componentDropdownIds[event.target.id]
   $(`#${selectId}`).empty()
-  $(`#${selectId}`).append(`<option selected disabled>Choose Component</option>`)
+  $(`#${selectId}`).append('<option selected disabled>Choose Component</option>')
   GRADING_COMPONENTS.map((component) => {
     $(`#${selectId}`).append(
       $('<option>', {
@@ -280,7 +287,7 @@ function populateComponentDropdown(event) {
 function populateStudentDropdown(event) {
   const selectId = studentDropdownIds[event.target.id]
   $(`#${selectId}`).empty()
-  $(`#${selectId}`).append(`<option selected disabled>Choose Student</option>`)
+  $(`#${selectId}`).append('<option selected disabled>Choose Student</option>')
   if (STUDENTS.length) {
     STUDENTS.forEach((student) => {
       $(`#${selectId}`).append(

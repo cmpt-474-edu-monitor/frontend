@@ -60,9 +60,9 @@
     </nav>
 
     <main class="container">
-      <div class="my-3 p-3 bg-body rounded shadow-sm invisible">
-        <select class="form-control" name="dependent" id="dependent-select">
-          <option selected disabled>Choose Dependent</option>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <select class="form-control invisible" name="dependent" id="dependent-select" onchange="listClassrooms()">
+          <option selected disabled>Loading...</option>
         </select>
       </div>
       <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -130,7 +130,7 @@
         <form method="post" onsubmit="enrollStudent(event)" id="EnrollStudentForm">
           <div class="form-group">
             <select class="form-control" name="classroom" id="enroll-student-select">
-              <option selected disabled>Choose classroom</option>
+              <option selected disabled>Loading...</option>
             </select>
             <input
               class="form-control invisible"
@@ -147,7 +147,7 @@
         <form method="post" onsubmit="withdrawStudent(event)" id="WithdrawStudentForm">
           <div class="form-group">
             <select class="form-control" name="classroom" id="withdraw-student-select">
-              <option selected disabled>Choose classroom</option>
+              <option selected disabled>Loading...</option>
             </select>
             <input
               class="form-control invisible"

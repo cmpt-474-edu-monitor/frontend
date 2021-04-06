@@ -63,20 +63,20 @@
     <main class="container">
       <div class="my-3 p-3 bg-body rounded shadow-sm">
         <select
-        class="form-control invisible"
-        name="classroom"
-        id="dependent-select"
-        onchange="listDependentClassrooms()"
-      >
-        <option selected disabled>Choose Dependent</option>
-      </select>
+          class="form-control invisible"
+          name="classroom"
+          id="dependent-select"
+          onchange="listDependentClassrooms()"
+        >
+          <option selected disabled>Loading...</option>
+        </select>
         <select
           class="form-control invisible"
           name="classroom"
           id="classroom-select"
           onchange="listGradingComponents()"
         >
-          <option selected disabled>Choose Classroom</option>
+          <option selected disabled>Loading...</option>
         </select>
       </div>
       <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -92,7 +92,11 @@
               <th scope="col" class="invisible-column" id="comment-column">Comment</th>
             </tr>
           </thead>
-          <tbody id="grades-table"></tbody>
+          <tbody id="grades-table">
+            <tr>
+              <td class="help-text">Please first select a classroom or dependent.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <button
@@ -192,7 +196,7 @@
         <form method="post" onsubmit="updateGradingComponent(event)" id="UpdateGradeComponentForm">
           <div class="form-group">
             <select class="form-control" name="componentId" id="update-component-select">
-              <option selected disabled>Choose Component</option>
+              <option selected disabled>Loading...</option>
             </select>
             <input
               class="form-control"
@@ -223,7 +227,7 @@
         <form method="post" onsubmit="removeGradingComponent(event)" id="RemoveGradeComponentForm">
           <div class="form-group">
             <select class="form-control" name="componentId" id="remove-component-select">
-              <option selected disabled>Choose Component</option>
+              <option selected disabled>Loading...</option>
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
@@ -238,10 +242,10 @@
               id="post-grade-component-select"
               required
             >
-              <option selected disabled>Choose Component</option>
+              <option selected disabled>Loading...</option>
             </select>
             <select class="form-control" name="studentId" id="post-grade-student-select" required>
-              <option selected disabled>Choose Student</option>
+              <option selected disabled>Loading...</option>
             </select>
             <input
               class="form-control"
