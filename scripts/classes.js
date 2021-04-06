@@ -41,7 +41,7 @@ async function createClassroom(event) {
   const newClassroom = { title: formData.get('classroomTitle') }
   try {
     const classroom = await client.Classrooms.create(newClassroom)
-    $('#classDropdown').append(`<tr>
+    $('#classroom-table').append(`<tr>
              <td>${classroom.title}</td>
              <td>${USER_FIRST_NAME + ' ' + USER_LAST_NAME}</td>
              <td>${classroom.students.length}</td>

@@ -10,7 +10,15 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="./grades.css" />
+    <script src="./node_modules/edu-monitor-sdk/lib/client.js"></script>
     <script type="text/javascript" src="./scripts/utils.js"></script>
+    <script type="text/javascript" src="./scripts/grades.js"></script>
     <title>Online Education Monitor</title>
   </head>
   <body>
@@ -54,65 +62,258 @@
 
     <main class="container">
       <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <div class="dropdown">
-          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-            Choose class <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li><a href="#">Class 1</a></li>
-            <li><a href="#">Class 2</a></li>
-            <li><a href="#">Class 3</a></li>
-          </ul>
-        </div>
+        <select
+        class="form-control invisible"
+        name="classroom"
+        id="dependent-select"
+        onchange="listDependentClassrooms()"
+      >
+        <option selected disabled>Choose Dependent</option>
+      </select>
+        <select
+          class="form-control invisible"
+          name="classroom"
+          id="classroom-select"
+          onchange="listGradingComponents()"
+        >
+          <option selected disabled>Choose Classroom</option>
+        </select>
       </div>
       <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h1>Class Name</h1>
+        <h1 id="class-name-grades-table">Class Name</h1>
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Status</th>
-              <th scope="col">Score</th>
-              <th scope="col">Out of</th>
+              <th scope="col">Title</th>
+              <th scope="col">Total Possible Marks</th>
+              <th scope="col">Weight</th>
+              <th scope="col" class="invisible-column" id="grades-column">Grades</th>
+              <th scope="col" class="invisible-column" id="score-column">Score</th>
+              <th scope="col" class="invisible-column" id="comment-column">Comment</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Assignment1</td>
-              <td>Marked</td>
-              <td>11</td>
-              <td>15</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Assignment2</td>
-              <td>Marked</td>
-              <td>11</td>
-              <td>15</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Assignment3</td>
-              <td>Marked</td>
-              <td>11</td>
-              <td>15</td>
-            </tr>
-          </tbody>
+          <tbody id="grades-table"></tbody>
         </table>
       </div>
-      <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <div class="text-center">
-          <div><strong class="text-gray-dark">Current Grade: </strong> A- (81%)</div>
-        </div>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseAddGradingComponent"
+        aria-expanded="false"
+        aria-controls="collapseAddGradingComponent"
+        id="add-grade-component-button"
+      >
+        Add Grade Component
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseUpdateGradingComponent"
+        aria-expanded="false"
+        aria-controls="collapseUpdateGradingComponent"
+        id="update-grade-component-button"
+        onclick="populateComponentDropdown(event)"
+      >
+        Update Grade Component
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseRemoveGradingComponent"
+        aria-expanded="false"
+        aria-controls="collapseRemoveGradingComponent"
+        id="remove-grade-component-button"
+        onclick="populateComponentDropdown(event)"
+      >
+        Remove Grade Component
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapsePostGrade"
+        aria-expanded="false"
+        aria-controls="collapsePostGrade"
+        id="post-grade-button"
+        onclick="populateComponentDropdown(event); populateStudentDropdown(event)"
+      >
+        Post Grade For Student
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseUpdateGrade"
+        aria-expanded="false"
+        aria-controls="collapseUpdateGrade"
+        id="update-grade-button"
+        onclick="populateComponentDropdown(event); populateStudentDropdown(event)"
+      >
+        Update Grade For Student
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseRemoveGrade"
+        aria-expanded="false"
+        aria-controls="collapseRemoveGrade"
+        id="remove-grade-button"
+        onclick="populateComponentDropdown(event); populateStudentDropdown(event)"
+      >
+        Remove Grade For Student
+      </button>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddGradingComponent">
+        <form method="post" onsubmit="addGradingComponent(event)" id="AddGradeComponentForm">
+          <div class="form-group">
+            <input class="form-control" type="text" placeholder="Title" name="title" id="title" />
+            <input
+              class="form-control"
+              type="number"
+              placeholder="Total Possible Marks"
+              name="totalMarks"
+              id="total-marks"
+            />
+            <input
+              class="form-control"
+              type="number"
+              placeholder="Weight"
+              name="weight"
+              id="weight"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseUpdateGradingComponent">
+        <form method="post" onsubmit="updateGradingComponent(event)" id="UpdateGradeComponentForm">
+          <div class="form-group">
+            <select class="form-control" name="componentId" id="update-component-select">
+              <option selected disabled>Choose Component</option>
+            </select>
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Title"
+              name="title"
+              id="update-component-title"
+            />
+            <input
+              class="form-control"
+              type="number"
+              placeholder="Total Possible Marks"
+              name="totalMarks"
+              id="update-total-marks"
+            />
+            <input
+              class="form-control"
+              type="number"
+              placeholder="Weight"
+              name="weight"
+              id="update-weight"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveGradingComponent">
+        <form method="post" onsubmit="removeGradingComponent(event)" id="RemoveGradeComponentForm">
+          <div class="form-group">
+            <select class="form-control" name="componentId" id="remove-component-select">
+              <option selected disabled>Choose Component</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapsePostGrade">
+        <form method="post" onsubmit="postGrade(event)" id="PostGradeForm">
+          <div class="form-group">
+            <select
+              class="form-control"
+              name="componentId"
+              id="post-grade-component-select"
+              required
+            >
+              <option selected disabled>Choose Component</option>
+            </select>
+            <select class="form-control" name="studentId" id="post-grade-student-select" required>
+              <option selected disabled>Choose Student</option>
+            </select>
+            <input
+              class="form-control"
+              type="number"
+              placeholder="Mark"
+              name="score"
+              id="post-grade-score-input"
+              required
+            />
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Comments"
+              name="comments"
+              id="post-grade-comments-input"
+              required
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseUpdateGrade">
+        <form method="post" onsubmit="updateGrade(event)" id="UpdateGradeForm">
+          <div class="form-group">
+            <select
+              class="form-control"
+              name="componentId"
+              id="update-grade-component-select"
+              required
+            >
+              <option selected disabled>Choose Component</option>
+            </select>
+            <select class="form-control" name="studentId" id="update-grade-student-select" required>
+              <option selected disabled>Choose Student</option>
+            </select>
+            <input
+              class="form-control"
+              type="number"
+              placeholder="Mark"
+              name="score"
+              id="update-grade-score-input"
+            />
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Comments"
+              name="comments"
+              id="update-grade-comments-input"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveGrade">
+        <form method="post" onsubmit="removeGrade(event)" id="RemoveGradeForm">
+          <div class="form-group">
+            <select
+              class="form-control"
+              name="componentId"
+              id="remove-grade-component-select"
+              required
+            >
+              <option selected disabled>Choose Component</option>
+            </select>
+            <select class="form-control" name="studentId" id="remove-grade-student-select" required>
+              <option selected disabled>Choose Student</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
       </div>
     </main>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
