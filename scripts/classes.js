@@ -56,7 +56,7 @@ async function createClassroom(event) {
     const classroom = await client.Classrooms.create(newClassroom)
     $('#classroom-table').append(`<tr>
              <td>${classroom.title}</td>
-             <td>${USER_FIRST_NAME + ' ' + USER_LAST_NAME}</td>
+             <td>${user.firstName + ' ' + user.lastName}</td>
              <td>${classroom.students.length}</td>
          </tr>`)
     $('#CreateClassroomForm').trigger('reset')
