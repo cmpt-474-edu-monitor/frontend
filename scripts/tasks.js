@@ -4,22 +4,59 @@ let CLASSROOMS = []
 
 let GLOBAL_TASKS
 
-let USER
+let USER_ID
+
+const me = JSON.parse(window.sessionStorage.getItem('user'))
 
 // to load the tasks when the page first loads
 $(document).ready(async function () {
   try {
-    USER = await client.Users.me()
-    CLASSROOMS = await client.Classrooms.listEnrolledClassrooms()
+    if (me.role === 'STUDENT') {
+      USER_ID = me.id
+      await populateClassrooms()
+      await listTasks()
+    }
 
-    window.addTaskClassroomOption.innerHTML = '<option selected disabled>Choose class</option>' +
-      CLASSROOMS.map(classroom => `<option value="${classroom.id}">${classroom.title}</option>`).join('\n')
+    if (me.role === 'GUARDIAN') {
+      $('#add-task-btn').addClass('invisible')
+      $('#edit-task-btn').addClass('invisible')
+      $('#remove-task-btn').addClass('invisible')
 
-    await listTasks()
+      $('#dependent-select').removeClass('invisible')
+      const dependents = await client.Users.listDependents(me.id)
+      $('#dependent-select').empty()
+      $('#dependent-select').append('<option selected disabled>Choose Dependent</option>')
+      dependents.map((dependent) => {
+        $('#dependent-select').append(
+          $('<option>', {
+            value: dependent,
+            text: dependent
+          })
+        )
+      })
+    }
+
+    if (me.role === 'EDUCATOR') {
+      USER_ID = me.id
+      await populateClassrooms()
+      await listTasks()
+    }
+
   } catch (err) {
     alert('error ' + err.message)
   }
 })
+
+async function populateClassrooms() {
+  if (me.role === 'EDUCATOR') {
+    CLASSROOMS = await client.Classrooms.listInstructingClassrooms(me.id)
+  } else {
+    CLASSROOMS = await client.Classrooms.listEnrolledClassrooms(USER_ID)
+  }
+
+  window.addTaskClassroomOption.innerHTML = '<option selected disabled>Choose class</option>' +
+    CLASSROOMS.map(classroom => `<option value="${classroom.id}">${classroom.title}</option>`).join('\n')
+}
 
 async function addTask (event) {
   event.preventDefault() // prevents the page from refreshing
@@ -41,9 +78,9 @@ async function deleteTask (event) {
   const formData = getFormData('delete-task-form')
 
   try {
-    const deletedTask = await client.Tasks.delete(formData.id)
+    await client.Tasks.delete(formData.id)
     $('#delete-task-form').trigger('reset')
-    deleteFromTable(deletedTask)
+    deleteFromTable(formData.id)
   } catch (error) {
     alert('error ' + error.message)
   }
@@ -52,10 +89,11 @@ async function deleteTask (event) {
 async function listTasks () {
   try {
     // can query for tasks by studentId and classroomId (optional)
-    let tasks = await client.Tasks.list()
+    let tasks = await client.Tasks.list(USER_ID)
     GLOBAL_TASKS = tasks
     addToTable(tasks)
   } catch (error) {
+    console.error(error)
     alert('error ' + error.message)
   }
 }
@@ -82,7 +120,7 @@ async function editTask (event) {
 
 async function updateCompleteness (id, completed) {
   try {
-    const task = await client.Tasks.updateCompleteness(id, completed)
+    await client.Tasks.updateCompleteness(id, completed)
   } catch (error) {
     alert('error ' + error.message)
   }
@@ -110,8 +148,10 @@ function addItemToTable (item) {
     <td>${item.deadline}</td>
     <td>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="flexCheckDefault" ${item.completedStudents.indexOf(USER.id) !== -1 ? 'checked' : ''}
-            onclick="updateCompleteness('${item.id}', event.target.checked)"
+          <input class="form-check-input" type="checkbox" id="flexCheckDefault"
+            onclick="updateCompleteness('${item.id}', event.target.checked)" 
+            ${item.completedStudents.indexOf(USER_ID) !== -1 ? 'checked' : ''}
+            ${me.role !== 'student' ? 'disabled' : ''}
           >
         </div>
     </td>
@@ -120,6 +160,7 @@ function addItemToTable (item) {
 }
 
 function deleteFromTable (item) {
+  debugger
   $(`#${item}`).remove()
   GLOBAL_TASKS = GLOBAL_TASKS.filter((task) => task.id != item) // remove item from GLOBAL_TASK
   populateDropdown() // re-populate dropdown

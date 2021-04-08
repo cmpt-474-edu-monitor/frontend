@@ -56,6 +56,16 @@
 
     <main class="container">
       <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <select
+                class="form-control invisible"
+                name="dependent"
+                id="dependent-select"
+                onchange="USER_ID = event.target.value; populateClassrooms().then(listTasks)"
+        >
+          <option selected disabled>Loading...</option>
+        </select>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
         <table class="table" id="tasks-table">
           <thead>
             <tr>
@@ -69,6 +79,7 @@
         </table>
       </div>
       <button
+        id="add-task-btn"
         class="btn btn-primary"
         type="button"
         data-toggle="collapse"
@@ -79,6 +90,7 @@
         Add task
       </button>
       <button
+        id="remove-task-btn"
         class="btn btn-primary"
         type="button"
         data-toggle="collapse"
@@ -90,6 +102,7 @@
         Remove task
       </button>
       <button
+        id="edit-task-btn"
         class="btn btn-primary"
         type="button"
         data-toggle="collapse"
@@ -99,7 +112,8 @@
         onclick="populateDropdown()"
       >
         Edit Task
-      </button>
+      </button
+>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddTask">
         <form method="post" onsubmit="addTask(event)" id="add-task-form">
