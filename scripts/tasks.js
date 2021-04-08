@@ -1,37 +1,32 @@
 const client = Client.create(window.RPC_ENDPOINT)
 
-const CLASSROOMS = {
-  1: 'History',
-  2: 'English',
-  3: 'French',
-}
-
-const DONE = {
-  false: 'Not Done',
-  true: 'Done',
-}
+let CLASSROOMS = []
 
 let GLOBAL_TASKS
 
-async function addTask(event) {
+let USER
+
+// to load the tasks when the page first loads
+$(document).ready(async function () {
+  try {
+    USER = await client.Users.me()
+    CLASSROOMS = await client.Classrooms.listEnrolledClassrooms()
+
+    window.addTaskClassroomOption.innerHTML = '<option selected disabled>Choose class</option>' +
+      CLASSROOMS.map(classroom => `<option value="${classroom.id}">${classroom.title}</option>`).join('\n')
+
+    await listTasks()
+  } catch (err) {
+    alert('error ' + err.message)
+  }
+})
+
+async function addTask (event) {
   event.preventDefault() // prevents the page from refreshing
 
   const formData = getFormData('add-task-form')
-  const classroom = Object.keys(CLASSROOMS).find((key) => CLASSROOMS[key] === formData.class)
-  const id = sessionStorage.getItem('id')
-
   try {
-    // classroom, student, addedBy is hard coded for now
-    // done will always be false when adding a new task
-    let task = await client.Tasks.addTask(
-      classroom,
-      formData.title,
-      formData.deadline,
-      id,
-      false,
-      id
-    )
-    task = JSON.parse(task)
+    let task = await client.Tasks.create(formData)
     GLOBAL_TASKS.push(task)
     $('#add-task-form').trigger('reset')
     addToTable(task)
@@ -40,13 +35,13 @@ async function addTask(event) {
   }
 }
 
-async function deleteTask(event) {
+async function deleteTask (event) {
   event.preventDefault() //prevent the page from refreshing
 
   const formData = getFormData('delete-task-form')
 
   try {
-    const deletedTask = await client.Tasks.deleteTask(formData.task)
+    const deletedTask = await client.Tasks.delete(formData.id)
     $('#delete-task-form').trigger('reset')
     deleteFromTable(deletedTask)
   } catch (error) {
@@ -54,12 +49,10 @@ async function deleteTask(event) {
   }
 }
 
-async function listTasks() {
+async function listTasks () {
   try {
-    const id = sessionStorage.getItem('id')
     // can query for tasks by studentId and classroomId (optional)
-    let tasks = await client.Tasks.listTasks(id)
-    tasks = JSON.parse(tasks)
+    let tasks = await client.Tasks.list()
     GLOBAL_TASKS = tasks
     addToTable(tasks)
   } catch (error) {
@@ -67,36 +60,18 @@ async function listTasks() {
   }
 }
 
-async function editTask(event) {
+async function editTask (event) {
   event.preventDefault()
   const formData = getFormData('edit-task-form')
 
-  const task = {
-    id: formData.taskId,
-    classroom: Object.keys(CLASSROOMS).find((key) => CLASSROOMS[key] === formData.class),
-    title: formData.title,
-    deadline: formData.deadline,
-    student: formData.student,
-    done: formData.done,
-    addedBy: formData.addedBy,
-  }
-
   try {
-    await client.Tasks.updateTask(
-      task.id,
-      task.classroom,
-      task.title,
-      task.deadline,
-      task.student,
-      task.done,
-      task.addedBy
-    )
+    const task = await client.Tasks.update(formData.id, formData)
     // update GLOBAL_TASKS
-    GLOBAL_TASKS = GLOBAL_TASKS.filter((t) => t.id != task.id)
+    GLOBAL_TASKS = GLOBAL_TASKS.filter((t) => t.id !== task.id)
     GLOBAL_TASKS.push(task)
 
     // update table value
-    deleteFromTable(formData.taskId)
+    deleteFromTable(formData.id)
     addItemToTable(task)
 
     $('#edit-task-form').trigger('reset')
@@ -105,12 +80,15 @@ async function editTask(event) {
   }
 }
 
-// to load the tasks when the page first loads
-// $(document).ready(function () {
-//   listTasks();
-// });
+async function updateCompleteness (id, completed) {
+  try {
+    const task = await client.Tasks.updateCompleteness(id, completed)
+  } catch (error) {
+    alert('error ' + error.message)
+  }
+}
 
-function getFormData(formID) {
+function getFormData (formID) {
   const form = document.getElementById(formID)
   return Object.values(form).reduce((obj, field) => {
     if (field.type != 'submit') {
@@ -124,26 +102,30 @@ function getFormData(formID) {
   }, {})
 }
 
-function addItemToTable(item) {
+function addItemToTable (item) {
   $('#tasks-table tr:last').after(
     ` <tr id=${item.id}>
-    <td>${CLASSROOMS[item.classroom]}</td>
+    <td>${CLASSROOMS.find(classroom => classroom.id === item.classroom).title}</td>
     <td>${item.title}</td>
     <td>${item.deadline}</td>
     <td>
-      <div>${DONE[item.done]}</div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="flexCheckDefault" ${item.completedStudents.indexOf(USER.id) !== -1 ? 'checked' : ''}
+            onclick="updateCompleteness('${item.id}', event.target.checked)"
+          >
+        </div>
     </td>
   </tr>`
   )
 }
 
-function deleteFromTable(item) {
+function deleteFromTable (item) {
   $(`#${item}`).remove()
   GLOBAL_TASKS = GLOBAL_TASKS.filter((task) => task.id != item) // remove item from GLOBAL_TASK
   populateDropdown() // re-populate dropdown
 }
 
-function addToTable(items) {
+function addToTable (items) {
   if (items instanceof Array) {
     items.forEach((item) => {
       addItemToTable(item)
@@ -153,7 +135,7 @@ function addToTable(items) {
   }
 }
 
-function populateDropdown() {
+function populateDropdown () {
   $('#delete-task-select').empty()
   $('#edit-task-select').empty()
   $('#delete-task-select').append(`<option selected disabled>Choose Task</option>`)
@@ -174,7 +156,7 @@ function populateDropdown() {
   })
 }
 
-function updateEditForm(event) {
+function updateEditForm (event) {
   const task = GLOBAL_TASKS.find((task) => task.id == event.value)
   $('#edit-task-classroom').val(CLASSROOMS[task.classroom])
   $('#edit-task-title').val(task.title)

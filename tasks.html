@@ -104,11 +104,11 @@
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddTask">
         <form method="post" onsubmit="addTask(event)" id="add-task-form">
           <div class="form-group">
-            <select class="form-control add-task-field" name="class">
-              <option selected disabled>Choose class</option>
-              <option value="History">History</option>
-              <option value="English">English</option>
-              <option value="French">French</option>
+            <select id="addTaskClassroomOption" class="form-control add-task-field" name="classroom">
+<!--              <option selected disabled>Choose class</option>-->
+<!--              <option value="History">History</option>-->
+<!--              <option value="English">English</option>-->
+<!--              <option value="French">French</option>-->
             </select>
             <div class="add-task">
               <input class="form-control" type="text" placeholder="Task Name" name="title" />
@@ -125,7 +125,7 @@
       <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveTask">
         <form method="delete" onsubmit="deleteTask(event)" id="delete-task-form">
           <div class="form-group">
-            <select class="form-control" name="task" id="delete-task-select">
+            <select class="form-control" name="id" id="delete-task-select">
               <option selected disabled>Choose Task</option>
             </select>
           </div>
@@ -138,13 +138,13 @@
           <div class="form-group">
             <select
               class="form-control"
-              name="taskId"
+              name="id"
               id="edit-task-select"
               onchange="updateEditForm(this)"
             >
               <option selected disabled>Choose Task</option>
             </select>
-            <select
+            <!--select
               class="form-control add-task-field add-task"
               name="class"
               id="edit-task-classroom"
@@ -153,7 +153,7 @@
               <option value="History">History</option>
               <option value="English">English</option>
               <option value="French">French</option>
-            </select>
+            </select-->
             <div class="add-task">
               <input
                 class="form-control"
@@ -167,10 +167,10 @@
               <label class="date-label">Due Date: </label>
               <input class="form-control" type="date" name="deadline" id="edit-task-deadline" />
             </div>
-            <div>
+            <!--div>
               <input type="checkbox" name="done" id="edit-task-done" value="false" />
               <label for="done">Done?</label>
-            </div>
+            </div-->
             <input type="hidden" name="student" id="edit-task-student" />
             <input type="hidden" name="addedBy" id="edit-task-addedBy" />
           </div>
