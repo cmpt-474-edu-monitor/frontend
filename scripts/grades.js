@@ -1,4 +1,4 @@
-const client = Client.create('https://5ga1qnpnq0.execute-api.us-east-1.amazonaws.com/jsonrpc')
+const client = Client.create(window.RPC_ENDPOINT)
 const user = JSON.parse(window.sessionStorage.getItem('user'))
 const componentDropdownIds = {
   'update-grade-component-button': 'update-component-select',
