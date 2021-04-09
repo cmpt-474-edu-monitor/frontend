@@ -1,0 +1,8 @@
+.invisible-column {
+  display: none;
+}
+
+.help-text {
+  font-weight: 500;
+  color: #007bff;
+}

@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="./account.css" />
     <title>Online Education Monitor</title>
     <script src="./node_modules/edu-monitor-sdk/lib/client.js"></script>
-    <script src="./scripts/account.js"></script>
+    <script type="text/javascript" src="./scripts/utils.js"></script>
+    <script type="text/javascript" src="./scripts/account.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -46,6 +47,11 @@
             >
           </li>
         </ul>
+        <ul class="navbar-nav navbar-right">
+          <li>
+            <button class="btn btn-secondary pull-right" onclick="logout()">Log Out</button>
+          </li>
+        </ul>
       </div>
     </nav>
 
@@ -67,6 +73,119 @@
             <td id="roleDisp">Loading...</td>
           </tr>
         </table>
+      </div>
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseUpdatePassword"
+        aria-expanded="false"
+        aria-controls="collapseUpdatePassword"
+      >
+        Update Password
+      </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseUpdateProfile"
+        aria-expanded="false"
+        aria-controls="collapseUpdateProfile"
+      >
+        Update Profile
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseAddGuardian"
+        aria-expanded="false"
+        aria-controls="collapseAddGuardian"
+        id="add-guardian-button"
+      >
+        Add Guardian
+      </button>
+      <button
+        class="btn btn-primary invisible"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapseRemoveGuardian"
+        aria-expanded="false"
+        aria-controls="collapseRemoveGuardian"
+        id="delete-guardian-button"
+      >
+        Remove Guardian
+      </button>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseUpdatePassword">
+        <form method="post" onsubmit="updatePassword(event)" id="UpdatePasswordForm">
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="password"
+              placeholder="Old Password"
+              name="oldPassword"
+              id="old-password"
+            />
+            <input
+              class="form-control"
+              type="password"
+              placeholder="New Password"
+              name="newPassword"
+              id="new-password"
+            />
+            <button type="submit" class="btn btn-primary submit-button">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseUpdateProfile">
+        <form method="post" onsubmit="updateProfile(event)" id="UpdateProfileForm">
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="First Name"
+              name="firstName"
+              id="first-name"
+            />
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Last Name"
+              name="lastName"
+              id="last-name"
+            />
+            <input class="form-control" type="email" placeholder="Email" name="email" id="email" />
+            <button type="submit" class="btn btn-primary submit-button">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseAddGuardian">
+        <form method="post" onsubmit="addGuardian(event)" id="AddGuardianForm">
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="email"
+              placeholder="Guardian's Email"
+              name="guardianEmail"
+              id="add-guardian-email"
+            />
+            <button type="submit" class="btn btn-primary submit-button">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="my-3 p-3 bg-body rounded shadow-sm collapse" id="collapseRemoveGuardian">
+        <form method="post" onsubmit="removeGuardian(event)" id="RemoveGuardianForm">
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="email"
+              placeholder="Guardian's Email"
+              name="guardianEmail"
+              id="rempve-guardian-email"
+            />
+            <button type="submit" class="btn btn-primary submit-button">Submit</button>
+          </div>
+        </form>
       </div>
     </main>
 
