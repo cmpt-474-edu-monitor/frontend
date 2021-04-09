@@ -208,14 +208,15 @@ async function removeGrade(event) {
   }
 }
 
-
 function addToGradesTable() {
   $('#grades-table').empty()
   GRADING_COMPONENTS.map((component) => {
     $('#grades-table').append(`<tr>
       <td>${component.title}</td>
       <td>${component.total.toString()}</td>
-      <td>${component.weight.toString()}</td>` + (user.role == 'EDUCATOR' ? component.grade.length ? JSON.stringify(component.grade) : '[]' + '</tr>' : `<td>${component.grade.score}</td> <td>${component.grade.comments}</td>` + '</tr>')
+      <td>${component.weight.toString()}</td>
+      ${user.role == 'EDUCATOR' ? component.grades.length > 0 ? `<td>${JSON.stringify(component.grades)}</td>` : '<td>[]</td>' + '</tr>' : component.grade ? `<td>${component.grade.score}</td> <td>${component.grade.comments}</td>` : '<td></td>'}</tr>
+      ` 
     )
   })
 }

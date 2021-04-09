@@ -99,17 +99,21 @@ async function withdrawStudent(event) {
 function findInstructors() {
   if (user.role == 'STUDENT' || user.role == 'GUARDIAN') {
     // User.lookup() to get the first name and last name of the instructor for each classroom
-    CLASSROOMS.forEach(async (classroom) => {
-      try {
-        if (classroom.firstName && classroom.lastName) return
-        const instructor = await client.Users.lookup({ id: classroom.instructor })
-        classroom.instructorFirstName = instructor.firstName
-        classroom.instructorLastName = instructor.lastName
-        addClassroomsToTable()
-      } catch (err) {
-        alert('Cannot find instructors for classroom: ' + err.message)
-      }
-    })
+    if (CLASSROOMS.length > 0) {
+      CLASSROOMS.forEach(async (classroom) => {
+        try {
+          if (classroom.firstName && classroom.lastName) return
+          const instructor = await client.Users.lookup({ id: classroom.instructor })
+          classroom.instructorFirstName = instructor.firstName
+          classroom.instructorLastName = instructor.lastName
+          addClassroomsToTable()
+        } catch (err) {
+          alert('Cannot find instructors for classroom: ' + err.message)
+        }
+      })
+    } else {
+      addClassroomsToTable()
+    }
   } else {
     addClassroomsToTable()
   }

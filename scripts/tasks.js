@@ -151,7 +151,7 @@ function addItemToTable (item) {
           <input class="form-check-input" type="checkbox" id="flexCheckDefault"
             onclick="updateCompleteness('${item.id}', event.target.checked)" 
             ${item.completedStudents.indexOf(USER_ID) !== -1 ? 'checked' : ''}
-            ${me.role !== 'student' ? 'disabled' : ''}
+            ${me.role !== 'STUDENT' ? 'disabled' : ''}
           >
         </div>
     </td>
@@ -160,7 +160,6 @@ function addItemToTable (item) {
 }
 
 function deleteFromTable (item) {
-  debugger
   $(`#${item}`).remove()
   GLOBAL_TASKS = GLOBAL_TASKS.filter((task) => task.id != item) // remove item from GLOBAL_TASK
   populateDropdown() // re-populate dropdown

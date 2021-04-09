@@ -43,7 +43,10 @@ async function updateProfile(event) {
   }
   try {
     const user = await client.Users.updateProfile(payload)
+    sessionStorage.removeItem('user', user)
+    sessionStorage.setItem('user', user)
     updateAccountInformation(user)
+    alert('Succcessfully Updated Profile!')
     $('#UpdateProfileForm').trigger('reset')
   } catch (err) {
     alert('Cannot update profile: ' + err.message)
